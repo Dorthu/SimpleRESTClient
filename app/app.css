@@ -1,0 +1,71 @@
+/* app css stylesheet */
+
+body {
+    background-color: #d3d3d3;
+}
+
+.request-content{
+    border-left: 1px solid #808080;
+    border-right: 1px solid #808080;
+    border-top: 1px solid #808080;
+    background-color: #ffffff;
+    height: 80%;
+    margin-top: 5%;
+}
+
+.bottom-bar {
+
+    background-color: #ffffff;
+    border-top: 1px solid #808080;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    width: 100%;
+    padding: 20px;
+
+}
+
+.menu {
+  list-style: none;
+  border-bottom: 0.1em solid black;
+  margin-bottom: 2em;
+  padding: 0 0 0.5em;
+}
+
+.menu:before {
+  content: "[";
+}
+
+.menu:after {
+  content: "]";
+}
+
+.menu > li {
+  display: inline;
+}
+
+.menu > li:before {
+  content: "|";
+  padding-right: 0.3em;
+}
+
+.menu > li:nth-child(1):before {
+  content: "";
+  padding: 0;
+}
+
+/* for buttons to remove elements */
+.remove-button {
+    border: 1px solid #ff0000;
+    border-radius: 100%;
+    background-color: #ffffff;
+    color: #ff0000;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+
+.token {
+    font-weight: bolder;
+    font-size: large;
+}

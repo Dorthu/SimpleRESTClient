@@ -1,0 +1,36 @@
+<div ng-controller="RequestCtrl">
+    <h1>Request</h1>
+    <hr/>
+
+    <div class="row" id="header">
+        <div class="row">
+            <h3>Headers:</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                Field:
+            </div>
+
+            <div class="col-md-6">
+                Value
+            </div>
+        </div>
+    </div>
+    <div class="row" id="body">
+        <div class="row">
+            <h3>Body</h3>
+        </div>
+        <div class="row">
+            <textarea id="requestBody">
+            </textarea>
+        </div>
+    </div>
+
+    {{ 'yet' + 'ti' }}
+    {{ things }}
+    <div style="position: fixed; bottom: 0px; left: 0px; right: 0px;  width:100%; border-top: 1px solid grey; padding: 10px; padding-top: 15px;">
+        URL: <input type="text" style="width: 40em;"/>   Method: <input type="text" style="width: 6em;"/>
+        <br/><br/>
+        <a onclick="javscript: $scope.sendRequest();" class="btn btn-primary">Send Request</a>
+    </div>
+</div>

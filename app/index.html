@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="SimpleRESTClient">
+<head>
+    <title>Simple REST Client</title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" media="screen"/>
+    <link rel="stylesheet" href="app.css" media="screen" />
+</head>
+<body>
+
+<div class="container request-content">
+    <div class="" ng-controller="RequestCtrl as rc">
+
+        <div id="headerSection">
+            <div class="row">
+                <h2>Headers</h2>
+            </div>
+
+            <div class="row" style="margin-top: 5px;" ng-repeat="header in headers">
+                <div class="col-md-1"><a ng-click="removeHeader()" class="btn remove-button" style="text-align: right;">X</a></div>
+                <div class="col-md-5"><input type="text" ng-model="header.name"/></div>
+                <div class="col-md-5"><input type="text" ng-model="header.value"/></div>
+            </div>
+
+            <div class="row" style="margin-top: 5px;">
+                <a ng-click="addHeader();" class="btn btn-primary">Add Header</a>
+            </div>
+        </div>
+
+        <hr/>
+
+        <div class="requestSection">
+
+            <div class="row">
+                <h2>Request Body</h2>
+            </div>
+
+            <json-template json="requestBody" parent="None" obj-type="dict"></json-template>
+        </div>
+
+        <div class="bottom-bar">
+            <div class="row">
+                <input class="col-md-4" ng-model="requestURL" type="text" placeholder="ReSTful endpoint"/>
+                <input class="col-md-2" ng-model="requestMethod" type="text" placeholder="HTTP Method" />
+                <a class="col-md-1 btn btn-primary" ng-click="sendRequest()">Do it</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+  <!-- In production use:
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
+  -->
+  <script src="bower_components/angular/angular.js"></script>
+  <script src="bower_components/angular-route/angular-route.js"></script>
+  <script src="bower_components/jquery/dist/jquery.js"></script>
+  <script src="app.js"></script>
+  <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+  <script src="components/version/version.js"></script>
+  <script src="components/version/version-directive.js"></script>
+  <script src="components/version/interpolate-filter.js"></script>
+</body>
+</html>

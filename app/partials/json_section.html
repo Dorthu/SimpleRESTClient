@@ -1,0 +1,32 @@
+<div class="row token">
+    {{ opening_char }}
+</div>
+<div class="row" style="border-left: 1px solid #d3d3d3;">
+    <div class="row" ng-repeat="cur in json" style="margin-bottom: 5px;">
+        <div ng-switch="cur.type">
+            <div ng-switch-when="keyval">
+                <div class="col-md-1" style="text-align: right;"><a ng-click="removeRequestPair($index)" class="btn remove-button">X</a></div>
+                <div class="col-md-5"><input id="{{cur.uid}}" type="text" ng-model="cur.key" init-focus /></div>
+                <div class="col-md-5"><input type="text" ng-model="cur.value" /></div>
+            </div>
+            <div ng-switch-when="obj">
+                <div class="col-md-offset-1">
+                    <input type="text" ng-model="cur.key"/> : <json-template json="cur.obj" parent="json" obj-type="cur.objType"></json-template>
+                </div>
+            </div>
+            <div ng-switch-when="arval">
+                <div class="col-md-1" style="text-align: right;"><a ng-click="removeRequestPair($index)" class="btn remove-button">X</a></div>
+                <div class="col-md-5"><input type="text" ng-model="cur.value"/></div>
+            </div>
+            <div ng-switch-default>
+                <p>{{ cur.type }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row token" style="margin-bottom: 10px;">
+    {{ closing_char }}<br/>
+    <a ng-click="addRequestPair()" class="btn btn-primary">Add Pair</a>
+    <a ng-click="addRequestObject()" class="btn">Add Object</a>
+    <a ng-click="addRequestArray()" class="btn">Add Array</a>
+</div>
