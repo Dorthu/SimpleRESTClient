@@ -18,9 +18,9 @@ body {
     background-color: #ffffff;
     border-top: 1px solid #808080;
     position: fixed;
-    bottom: 0px;
-    left: 0px;
-    right: 0px;
+    bottom: 0;
+    left: 0;
+    right: 0;
     width: 100%;
     padding: 20px;
 
@@ -63,6 +63,34 @@ body {
     color: #ff0000;
     vertical-align: middle;
     margin-top: -3px;
+}
+
+.pin-button {
+    border: 1px solid #808080;
+    border-radius: 100%;
+    background-color: #ffffff;
+    color: #808080;
+    vertical-align: middle;
+    margin-top: -3px;
+}
+
+.pin-button-selected {
+    border: 1px solid blue;
+    color: blue;
+}
+
+.history-button {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px;
+}
+
+.top-tab {
+    position: fixed;
+    top: 0;
+    right: 0;
+    padding: 10px;
 }
 
 .token {

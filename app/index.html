@@ -7,6 +7,9 @@
 </head>
 <body>
 
+<request-history></request-history>
+<view-tabs></view-tabs>
+
 <div class="container request-content">
     <div class="" ng-controller="RequestCtrl as rc">
 
@@ -16,9 +19,10 @@
             </div>
 
             <div class="row" style="margin-top: 5px;" ng-repeat="header in headers">
-                <div class="col-md-1"><a ng-click="removeHeader()" class="btn remove-button" style="text-align: right;">X</a></div>
-                <div class="col-md-5"><input type="text" ng-model="header.name"/></div>
-                <div class="col-md-5"><input type="text" ng-model="header.value"/></div>
+                <div class="col-md-1"><a ng-click="removeHeader($index)" class="btn remove-button" style="text-align: right;">X</a></div>
+                <div class="col-md-5"><input type="text" class="form-control" ng-model="header.name"/></div>
+                <div class="col-md-5"><input enter-aware type="text" class="form-control" ng-model="header.value"/></div>
+                <div class="col-md-1"><span class="glyphicon glyphicon-pushpin btn pin-button" ng-class="{true:'pin-button-selected', false:''}[header.pinned==1]" ng-click="togglePinnedHeader($index)"></span></div>
             </div>
 
             <div class="row" style="margin-top: 5px;">
@@ -37,15 +41,34 @@
             <json-template json="requestBody" parent="None" obj-type="dict"></json-template>
         </div>
 
+
+        <div class="row" style="height: 150px;"><!--spacer--></div>
+
         <div class="bottom-bar">
             <div class="row">
-                <input class="col-md-4" ng-model="requestURL" type="text" placeholder="ReSTful endpoint"/>
-                <input class="col-md-2" ng-model="requestMethod" type="text" placeholder="HTTP Method" />
-                <a class="col-md-1 btn btn-primary" ng-click="sendRequest()">Do it</a>
+                <div class="col-md-2">
+                    <h5>Request Menu</h5>
+                </div>
+                <div class="col-md-4 col-md-offset-6">
+                    <!-- empty? -->
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    <input class="form-control" ng-model="requestURL" type="text" placeholder="ReSTful endpoint"/>
+                </div>
+                <div class="input-group col-md-3">
+                    <input class="form-control" ng-model="requestMethod" type="text" placeholder="HTTP Method" />
+                    <span class="input-group-btn">
+                        <button class=" btn btn-primary" ng-click="sendRequest()">Do it</button>
+                    </span>
+                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 
   <!-- In production use:
@@ -56,6 +79,8 @@
   <script src="bower_components/jquery/dist/jquery.js"></script>
   <script src="app.js"></script>
   <script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
+  <script src="bower_components/bootstrap/js/dropdown.js"></script>
+  <script src="bower_components/bootstrap/js/tab.js"></script>
   <script src="components/version/version.js"></script>
   <script src="components/version/version-directive.js"></script>
   <script src="components/version/interpolate-filter.js"></script>

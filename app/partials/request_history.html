@@ -1,0 +1,11 @@
+<div class="history-button">
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Request History <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+            <li ng-repeat="cur in history"><a ng-click="chooseHistory($index);">{{ cur['name'] }}</a></li>
+
+        </ul>
+    </div>
+
+</div>

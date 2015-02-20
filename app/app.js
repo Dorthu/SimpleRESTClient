@@ -5,6 +5,9 @@ angular.module('SimpleRESTClient', [
   'ngRoute'
 ])
 
+/*
+    Helper classes
+ */
 ///source: http://stackoverflow.com/questions/14430655/recursion-in-angular-directives
 .factory('RecursionHelper', ['$compile', function($compile){
     return {
@@ -50,20 +53,78 @@ angular.module('SimpleRESTClient', [
     };
 }])
 
-.controller("RequestCtrl", function($scope) {
+.directive('enterAware', function() {
+        return function(scope, element, attrs) {
 
-        $scope.headers = [{'name':'Accept','value':'application/json'}];
+            ///popups break these modifiers, since these events don't fire when the alert has focus
+            scope.modifiers = [];
+
+            element.bind("keydown keypress", function(event) {
+                if(event.which==13) ///enter
+                {
+                    alert(scope.modifiers);
+                    event.preventDefault();
+                }
+                if(event.which==16 || event.which==17 || event.which==18 || event.which==224)
+                {
+                    scope.modifiers.push(event.which);
+                }
+            });
+
+            element.bind("keyup", function(event) {
+                if(event.which==16 || event.which==17 || event.which==18 || event.which==224)
+                {
+                    var removeIndex = scope.modifiers.indexOf(event.which);
+                    scope.modifiers.splice(removeIndex, 1);
+                }
+            });
+        };
+    })
+
+/*
+    Logic classes
+ */
+.controller("RequestCtrl", ['$scope', '$rootScope', function($scope, $rootScope) {
+
+        $scope.headers = [{'name':'Accept','value':'application/json', 'pinned': 1}];
 
         $scope.addHeader = function() {
-            $scope.headers.push({'name':'','value':''});
+            $scope.headers.push({'name':'','value':'', 'pinned': 0});
         };
 
         $scope.showEm = function() { alert($scope.headers[$scope.headers.length-1].name);};
 
-        $scope.requestBody = [{'type':'keyval', 'key':'example', 'value':'value'}];
+        $scope.requestBody  = [{'type':'keyval', 'key':'example', 'value':'value'}];
 
         $scope.requestURL = "";
         $scope.requestMethod="GET";
+
+        $scope.togglePinnedHeader = function(index) {
+            console.log($scope.headers[index]);
+            $scope.headers[index]['pinned'] = $scope.headers[index]['pinned']==1 ? 0 : 1;
+        };
+
+        $scope.removeHeader = function(index) {
+            $scope.headers.splice(index, 1);
+        };
+
+        $scope.clearHeaders = function() {
+            console.log('Clearing headers..');
+            var pinnedHeaders = [];
+            for(var x=0; x < $scope.headers.length; x++) {
+                var header = $scope.headers[x];
+                console.log(header);
+                if(header['pinned'])
+                    pinnedHeaders.push(header);
+            }
+
+            $scope.headers = pinnedHeaders;
+        };
+
+        $scope.newRequest = function() {
+            $scope.requestBody = [];
+            $scope.clearHeaders();
+        };
 
         $scope.serializeJSONRep = function(jsonRep, ret) {
 
@@ -71,7 +132,7 @@ angular.module('SimpleRESTClient', [
                 if(jsonRep[x]['type']=='keyval')
                     ret[jsonRep[x]['key']] = jsonRep[x]['value'];
                 else if(jsonRep[x]['type']=='arval')
-                    ret.push(jsonRep[x]['value'])
+                    ret.push(jsonRep[x]['value']);
                 else if(jsonRep[x]['type']=='obj') {
                     var add;
                     if (jsonRep[x]['objType'] == 'dict')
@@ -88,6 +149,12 @@ angular.module('SimpleRESTClient', [
 
             return ret;
         };
+
+        ///loads from history
+        $scope.$on('loadFromHistory', function(event, requestRep, headers) {
+            $scope.requestBody = requestRep;
+            $scope.headers = headers;
+        });
 
         $scope.sendRequest = function() {
 
@@ -118,13 +185,24 @@ angular.module('SimpleRESTClient', [
 
             console.log(request);
 
+            var requestHistory = {
+                'name':'Request '+$rootScope.history.length,
+                'request': request,
+                'headers': $.extend(true, [], $scope.headers),
+                'jsonRep': $.extend(true, [], $scope.requestBody)
+            };
+            $rootScope.history.push(requestHistory);
+
+            console.log(requestHistory);
+            console.log($scope.requestBody);
+
             $.ajax(request)
                 .done(function() {
-                    ///alert("Success");
+                    $scope.newRequest();
                 });
 
         };
-    })
+    }])
 
 .directive("jsonTemplate", function(RecursionHelper) {
         return {
@@ -156,11 +234,11 @@ angular.module('SimpleRESTClient', [
 
                 $scope.addRequestObject = function () {
                     $scope.json.push({'type': 'obj', 'objType':'dict', 'key':'object', 'obj': [{'type': 'keyval', 'key': 'example', 'value': 'value'}]});
-                }
+                };
 
                 $scope.addRequestArray = function () {
                     $scope.json.push({'type': 'obj', 'objType':'arr', 'key':'array', 'obj': [{'type': 'arval', 'value': 'value'}]});
-                }
+                };
 
                 $scope.removeRequestPair = function(index) {
                         $scope.json.splice(index, 1);
@@ -169,7 +247,7 @@ angular.module('SimpleRESTClient', [
                         {
                             $scope.parent.splice($scope.parent.indexOf($scope.json), 1);
                         }
-                }
+                };
 
             },
             compile: function(element) {
@@ -178,4 +256,45 @@ angular.module('SimpleRESTClient', [
             }
         };
     })
+
+.directive("requestHistory", ['$rootScope', function($rootScope) {
+        return {
+            restrict: 'E',
+            scope: {
+
+            },
+            templateUrl: 'partials/request_history.html',
+            controller: function($scope, $element) {
+
+                $rootScope.history = [];
+                $scope.history = $rootScope.history;
+
+                $scope.chooseHistory = function(index) {
+                   /// alert($rootScope.history[index]['request']);
+                    console.log($rootScope.history[index]);
+                    $rootScope.$broadcast('loadFromHistory', $rootScope.history[index]['jsonRep'], $rootScope.history[index]['headers']);
+                    console.log('Called emit');
+                };
+
+            }
+        };
+    }])
+
+.directive("viewTabs", ['$rootScope', function($rootScope) {
+        return {
+            restrict: 'E',
+            scope: {
+
+            },
+            templateUrl: 'partials/view_tab.html',
+            controller: function($scope, $element) {
+
+                $scope.selected = 0;
+
+                $scope.select = function(index) {
+                    $scope.selected = index;
+                };
+            }
+        };
+    }])
 ;
