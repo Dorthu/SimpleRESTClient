@@ -99,6 +99,9 @@ angular.module('SimpleRESTClient', [
         $scope.requestURL = "";
         $scope.requestMethod="GET";
 
+        ///hide the loader
+        $('#loader-fill').hide();
+
         $scope.togglePinnedHeader = function(index) {
             console.log($scope.headers[index]);
             $scope.headers[index]['pinned'] = $scope.headers[index]['pinned']==1 ? 0 : 1;
@@ -158,6 +161,8 @@ angular.module('SimpleRESTClient', [
 
         $scope.sendRequest = function() {
 
+            $('#loader-fill').show();
+
             var headers = {};
             var data = {};
             for(var x=0; x < $scope.headers.length; x++) {
@@ -199,6 +204,7 @@ angular.module('SimpleRESTClient', [
             $.ajax(request)
                 .done(function() {
                     $scope.newRequest();
+                    $('#loader-fill').hide();
                 });
 
         };
