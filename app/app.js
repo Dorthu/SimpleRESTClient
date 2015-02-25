@@ -177,9 +177,24 @@ angular.module('SimpleRESTClient', [
             var request = {
                 type: $scope.requestMethod,
                 url: $scope.requestURL,
-                success: function(data) {
-                    alert(data);
+                success: function(data, textStatus, rq) {
+                    //alert(data);
+                    request.response = data;
+
+                    try {
+                        request.responseData = $.parseJSON(data);
+                    }
+                    catch (err) {
+                        request.responseData = {};
+                        console.log("Unable to parse response "+data);
+                    }
+
+                    request.responseHeaders=rq.getAllResponseHeaders();
+
+                    $rootScope.response = data;
+                    $rootScope.$emit("gotResponse", data, request.responseHeaders);
                     console.log(data);
+                    console.log(request);
                 }
             };
 
@@ -208,6 +223,19 @@ angular.module('SimpleRESTClient', [
                 });
 
         };
+    }])
+
+.controller("ResponseController", ['$scope', '$rootScope', function($scope, $rootScope) {
+
+        $scope.response = "{}";
+        $scope.responseHeaders = "..";
+
+        $rootScope.$on('gotResponse', function(event, data, headers) {
+            $scope.response = data;
+            $scope.responseHeaders = headers;
+            $scope.$apply();
+        });
+
     }])
 
 .directive("jsonTemplate", function(RecursionHelper) {
@@ -299,7 +327,16 @@ angular.module('SimpleRESTClient', [
 
                 $scope.select = function(index) {
                     $scope.selected = index;
+                    $scope.$apply();
                 };
+
+                $rootScope.$on('gotResponse', function(event, data) {
+                    $scope.select(1);
+                });
+
+                $rootScope.$on('showRequest', function(event) {
+                    $scope.select(0);
+                });
             }
         };
     }])
